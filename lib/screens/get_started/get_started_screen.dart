@@ -2,48 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../home/home_screen.dart';
 
-/// Starting / Welcome Screen ("Get Started") matching Screen 1 of the reference UI.
+/// Starting / Get Started Screen.
+/// Uses the user's exact Orange Detector Orchard Splash Screen asset as the full-screen background
+/// with the functional "Get Started ->" button positioned at the bottom as an overlay.
 class GetStartedScreen extends StatelessWidget {
   const GetStartedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Set status bar icons to light since background is dark green/orchard foliage
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: Color(0xFF03531E),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
+        backgroundColor: const Color(0xFF03531E),
         body: Stack(
+          fit: StackFit.expand,
           children: [
-            // Full Screen Orchard Background Artwork
+            // 1. Exact original splash image asset as the full background
             Positioned.fill(
               child: Image.asset(
-                'assets/images/get_started_clean_bg_2x.png',
+                'assets/Orange Detector Orchard Splash Screen.png',
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0xFF2E7D32), Color(0xFF1B5E20)],
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Orange Detector',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  );
-                },
+                alignment: Alignment.topCenter,
               ),
             ),
 
-            // Bottom "Get Started ->" Action Button
+            // 2. Functional "Get Started ->" White Capsule Button Overlay at Bottom
             Align(
               alignment: Alignment.bottomCenter,
               child: SafeArea(
@@ -68,7 +56,7 @@ class GetStartedScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: const Color(0xFF16472A),
-                        elevation: 8,
+                        elevation: 6,
                         shadowColor: Colors.black.withValues(alpha: 0.35),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0),
@@ -81,7 +69,7 @@ class GetStartedScreen extends StatelessWidget {
                             'Get Started',
                             style: TextStyle(
                               color: Color(0xFF16472A),
-                              fontSize: 16,
+                              fontSize: 17,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.2,
                             ),

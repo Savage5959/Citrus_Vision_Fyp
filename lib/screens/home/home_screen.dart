@@ -12,6 +12,7 @@ import '../../widgets/home/upload_section.dart';
 import '../notifications/notifications_screen.dart';
 import '../placeholder/placeholder_tab_screen.dart';
 import '../preview/preview_image_screen.dart';
+import '../settings/settings_screen.dart';
 
 /// Main Home Screen reproducing the approved reference UI.
 class HomeScreen extends StatefulWidget {
@@ -42,20 +43,21 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top App Bar / Header
-            AppHeader(
-              onMenuPressed: () {
-                _scaffoldKey.currentState?.openDrawer();
-              },
-              onNotificationPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotificationsScreen(),
-                  ),
-                );
-              },
-            ),
+            // Top App Bar / Header (Shown on Home Tab)
+            if (_currentTabIndex == 0)
+              AppHeader(
+                onMenuPressed: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
+                onNotificationPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationsScreen(),
+                    ),
+                  );
+                },
+              ),
 
             // Tab Content
             Expanded(
@@ -75,12 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     description:
                         'Learn how to take optimal tree photos for accurate orange detection.',
                   ),
-                  const PlaceholderTabScreen(
-                    title: 'Settings',
-                    icon: Icons.settings_outlined,
-                    description:
-                        'Configure app language, model parameters, and storage preferences.',
-                  ),
+                  const SettingsScreen(showBackButton: false),
                 ],
               ),
             ),
