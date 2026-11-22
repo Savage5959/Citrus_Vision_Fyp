@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
 /// Functional Navigation Drawer for the Orange Detection app.
 class AppDrawer extends StatelessWidget {
@@ -14,6 +15,8 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Drawer(
       backgroundColor: AppColors.surfaceWhite,
       child: Column(
@@ -55,9 +58,9 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
-                  'Orange Detector',
-                  style: TextStyle(
+                Text(
+                  language.tr('app_name'),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -65,7 +68,7 @@ class AppDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Orange Detection & Counting System',
+                  language.tr('app_subtitle'),
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.85),
                     fontSize: 13,
@@ -83,25 +86,25 @@ class AppDrawer extends StatelessWidget {
                 _buildDrawerItem(
                   context: context,
                   icon: Icons.home_rounded,
-                  title: 'Home',
+                  title: language.tr('home'),
                   index: 0,
                 ),
                 _buildDrawerItem(
                   context: context,
                   icon: Icons.history_rounded,
-                  title: 'Detection History',
+                  title: language.tr('detection_history_title'),
                   index: 1,
                 ),
                 _buildDrawerItem(
                   context: context,
                   icon: Icons.help_outline_rounded,
-                  title: 'Help & Guide',
+                  title: language.tr('help_guide_title'),
                   index: 2,
                 ),
                 _buildDrawerItem(
                   context: context,
                   icon: Icons.settings_outlined,
-                  title: 'Settings',
+                  title: language.tr('settings'),
                   index: 3,
                 ),
                 const Padding(
@@ -113,17 +116,17 @@ class AppDrawer extends StatelessWidget {
                     Icons.psychology_outlined,
                     color: AppColors.primaryGreen,
                   ),
-                  title: const Text(
-                    'AI Model Info',
-                    style: TextStyle(
+                  title: Text(
+                    language.tr('ai_model_details'),
+                    style: const TextStyle(
                       color: AppColors.textDark,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  subtitle: const Text(
-                    'YOLO Deep Learning Architecture',
-                    style: TextStyle(fontSize: 12),
+                  subtitle: Text(
+                    language.tr('yolo_architecture'),
+                    style: const TextStyle(fontSize: 12),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -135,9 +138,9 @@ class AppDrawer extends StatelessWidget {
                     Icons.info_outline_rounded,
                     color: AppColors.textMuted,
                   ),
-                  title: const Text(
-                    'About Project',
-                    style: TextStyle(
+                  title: Text(
+                    language.tr('about_project'),
+                    style: const TextStyle(
                       color: AppColors.textDark,
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -158,11 +161,12 @@ class AppDrawer extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Orange Detector v1.0 • FYP',
-                style: TextStyle(
+                '${language.tr('version_title')} • ${language.tr('slogan')}',
+                style: const TextStyle(
                   color: AppColors.textLight,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -178,26 +182,19 @@ class AppDrawer extends StatelessWidget {
     required int index,
   }) {
     final bool isSelected = selectedIndex == index;
-
     return ListTile(
       leading: Icon(
         icon,
-        color: isSelected ? AppColors.primaryGreen : AppColors.textMuted,
+        color: isSelected ? AppColors.primaryGreen : AppColors.navInactive,
       ),
       title: Text(
         title,
         style: TextStyle(
           color: isSelected ? AppColors.primaryGreen : AppColors.textDark,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          fontSize: 14,
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
         ),
       ),
       selected: isSelected,
-      selectedTileColor: AppColors.actionButtonBg.withValues(alpha: 0.5),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
       onTap: () {
         Navigator.pop(context);
         onSelectTab(index);
@@ -206,23 +203,30 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _showModelInfoDialog(BuildContext context) {
+    final language = LanguageService.instance;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Text(language.tr('ai_model_details')),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.psychology_outlined, color: AppColors.primaryGreen),
-            SizedBox(width: 8),
-            Text('YOLO Model Status'),
+            Text(
+              'YOLO Deep Learning Architecture',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Real-time object detection and counting pipeline specifically optimized for orchard tree foliage and fruit cluster identification.',
+              style: TextStyle(fontSize: 13, height: 1.4),
+            ),
           ],
-        ),
-        content: const Text(
-          'The orange detection and counting deep learning model (YOLO) is currently being trained separately.\n\nInference API and on-device model endpoints will be connected in the next phase.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(language.tr('close')),
           ),
         ],
       ),
@@ -230,17 +234,31 @@ class AppDrawer extends StatelessWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final language = LanguageService.instance;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('About Orange Detector'),
-        content: const Text(
-          'Orange Detection and Counting System Using Deep Learning.\n\nFinal Year Project (FYP) developed using Flutter & Android Studio.',
+        title: Text(language.tr('about_project')),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Final Year Project (FYP)',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Orange Detection and Counting System Using Deep Learning.\n\n'
+              'Developed using Flutter for Android Studio, integrated with advanced computer vision models.',
+              style: TextStyle(fontSize: 13, height: 1.4),
+            ),
+          ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(language.tr('close')),
           ),
         ],
       ),

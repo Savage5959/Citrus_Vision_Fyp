@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../home/home_screen.dart';
+import '../../services/language_service.dart';
 
 /// Starting / Get Started Screen.
 /// Uses the user's exact Orange Detector Orchard Splash Screen asset as the full-screen background
@@ -10,6 +11,8 @@ class GetStartedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -62,20 +65,20 @@ class GetStartedScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30.0),
                         ),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Get Started',
-                            style: TextStyle(
+                            language.tr('get_started'),
+                            style: const TextStyle(
                               color: Color(0xFF16472A),
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.2,
                             ),
                           ),
-                          SizedBox(width: 8),
-                          Icon(
+                          const SizedBox(width: 8),
+                          const Icon(
                             Icons.arrow_forward_rounded,
                             color: Color(0xFF16472A),
                             size: 20,

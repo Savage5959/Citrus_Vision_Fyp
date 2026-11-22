@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../app/theme/app_colors.dart';
 import '../../services/image_picker_service.dart';
+import '../../services/language_service.dart';
 import '../../widgets/common/app_bottom_navigation.dart';
 import '../../widgets/common/app_drawer.dart';
 import '../../widgets/common/app_header.dart';
@@ -29,74 +30,79 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: AppColors.background,
-      drawer: AppDrawer(
-        selectedIndex: _currentTabIndex,
-        onSelectTab: (index) {
-          setState(() {
-            _currentTabIndex = index;
-          });
-        },
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Top App Bar / Header (Shown on Home Tab)
-            if (_currentTabIndex == 0)
-              AppHeader(
-                onMenuPressed: () {
-                  _scaffoldKey.currentState?.openDrawer();
-                },
-                onNotificationPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen(),
-                    ),
-                  );
-                },
-              ),
+    return ListenableBuilder(
+      listenable: LanguageService.instance,
+      builder: (context, _) {
+        final language = LanguageService.instance;
 
-            // Tab Content
-            Expanded(
-              child: IndexedStack(
-                index: _currentTabIndex,
-                children: [
-                  _buildHomeContent(),
-                  const PlaceholderTabScreen(
-                    title: 'Detection History',
-                    icon: Icons.access_time_rounded,
-                    description:
-                        'Your past tree scans, detected orange counts, and date logs will appear here.',
+        return Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: AppColors.background,
+          drawer: AppDrawer(
+            selectedIndex: _currentTabIndex,
+            onSelectTab: (index) {
+              setState(() {
+                _currentTabIndex = index;
+              });
+            },
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Top App Bar / Header (Shown on Home Tab)
+                if (_currentTabIndex == 0)
+                  AppHeader(
+                    onMenuPressed: () {
+                      _scaffoldKey.currentState?.openDrawer();
+                    },
+                    onNotificationPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ),
+                      );
+                    },
                   ),
-                  const PlaceholderTabScreen(
-                    title: 'Help & Guide',
-                    icon: Icons.help_outline_rounded,
-                    description:
-                        'Learn how to take optimal tree photos for accurate orange detection.',
+
+                // Tab Content
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentTabIndex,
+                    children: [
+                      _buildHomeContent(language),
+                      PlaceholderTabScreen(
+                        title: language.tr('detection_history_title'),
+                        icon: Icons.access_time_rounded,
+                        description: language.tr('detection_history_desc'),
+                      ),
+                      PlaceholderTabScreen(
+                        title: language.tr('help_guide_title'),
+                        icon: Icons.help_outline_rounded,
+                        description: language.tr('help_guide_desc'),
+                      ),
+                      const SettingsScreen(showBackButton: false),
+                    ],
                   ),
-                  const SettingsScreen(showBackButton: false),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: AppBottomNavigation(
-        currentIndex: _currentTabIndex,
-        onTap: (index) {
-          setState(() {
-            _currentTabIndex = index;
-          });
-        },
-      ),
+          ),
+          bottomNavigationBar: AppBottomNavigation(
+            currentIndex: _currentTabIndex,
+            onTap: (index) {
+              setState(() {
+                _currentTabIndex = index;
+              });
+            },
+          ),
+        );
+      },
     );
   }
 
   /// Builds the Home Screen content matching the reference image.
-  Widget _buildHomeContent() {
+  Widget _buildHomeContent(LanguageService language) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -115,9 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Hello Farmer! 👋',
-                          style: TextStyle(
+                        Text(
+                          language.tr('hello_farmer'),
+                          style: const TextStyle(
                             color: AppColors.textDark,
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
@@ -126,8 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          "Let's check how many\noranges are on your tree.",
-                          style: TextStyle(
+                          language.tr('tree_subtitle'),
+                          style: const TextStyle(
                             color: AppColors.textMuted,
                             fontSize: 14,
                             height: 1.35,
@@ -164,39 +170,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Bottom sheet shown when user taps the main Upload card.
+  /// Shows options to capture from camera, choose from gallery, or test sample.
   void _showUploadOptionsBottomSheet(BuildContext context) {
+    final language = LanguageService.instance;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surfaceWhite,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (sheetContext) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 40,
                   height: 4,
+                  margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: AppColors.divider,
+                    color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const SizedBox(height: 18),
-                const Text(
-                  'Select Tree Photo',
-                  style: TextStyle(
-                    fontSize: 17,
+                Text(
+                  language.tr('upload_image'),
+                  style: const TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 ListTile(
                   leading: Container(
                     padding: const EdgeInsets.all(8),
@@ -209,8 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: AppColors.primaryGreen,
                     ),
                   ),
-                  title: const Text('Open Camera'),
-                  subtitle: const Text('Take a photo of the orange tree'),
+                  title: Text(language.tr('open_camera')),
+                  subtitle: Text(language.tr('choose_from_gallery')),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     _pickImage(ImageSource.camera);
@@ -228,8 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: AppColors.primaryGreen,
                     ),
                   ),
-                  title: const Text('From Gallery'),
-                  subtitle: const Text('Choose an existing image'),
+                  title: Text(language.tr('from_gallery')),
+                  subtitle: Text(language.tr('choose_from_gallery')),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     _pickImage(ImageSource.gallery);
@@ -300,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _navigateToPreview(String imagePath, {bool isAsset = false}) {
+  void _navigateToPreview(String imagePath, {required bool isAsset}) {
     Navigator.push(
       context,
       MaterialPageRoute(

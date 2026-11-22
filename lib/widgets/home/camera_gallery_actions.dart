@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
 /// Camera and Gallery action buttons with circular containers and "or" divider.
+/// Reactive to application language changes.
 class CameraGalleryActions extends StatelessWidget {
   final VoidCallback onCameraTap;
   final VoidCallback onGalleryTap;
@@ -14,6 +16,8 @@ class CameraGalleryActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -31,8 +35,8 @@ class CameraGalleryActions extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14.0),
                 child: Text(
-                  'or',
-                  style: TextStyle(
+                  language.tr('or'),
+                  style: const TextStyle(
                     color: AppColors.textLight,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -57,12 +61,12 @@ class CameraGalleryActions extends StatelessWidget {
             children: [
               _buildActionButton(
                 icon: Icons.camera_alt_outlined,
-                label: 'Open Camera',
+                label: language.tr('open_camera'),
                 onTap: onCameraTap,
               ),
               _buildActionButton(
                 icon: Icons.image_outlined,
-                label: 'From Gallery',
+                label: language.tr('from_gallery'),
                 onTap: onGalleryTap,
               ),
             ],

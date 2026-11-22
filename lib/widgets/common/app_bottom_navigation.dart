@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
 /// Bottom Navigation Bar with 4 items: Home, History, Help, Settings.
-/// Exactly matching the reference image.
+/// Exactly matching the reference image and reacting to language changes.
 class AppBottomNavigation extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -15,6 +16,8 @@ class AppBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surfaceWhite,
@@ -35,22 +38,22 @@ class AppBottomNavigation extends StatelessWidget {
               _buildNavItem(
                 index: 0,
                 icon: Icons.home_rounded,
-                label: 'Home',
+                label: language.tr('home'),
               ),
               _buildNavItem(
                 index: 1,
                 icon: Icons.access_time_rounded,
-                label: 'History',
+                label: language.tr('history'),
               ),
               _buildNavItem(
                 index: 2,
                 icon: Icons.help_outline_rounded,
-                label: 'Help',
+                label: language.tr('help'),
               ),
               _buildNavItem(
                 index: 3,
                 icon: Icons.settings_outlined,
-                label: 'Settings',
+                label: language.tr('settings'),
               ),
             ],
           ),

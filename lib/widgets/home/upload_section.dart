@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
-/// Main upload card section matching the reference design.
+/// Main upload card section matching the reference design and multilingual.
 class UploadSection extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -12,6 +13,8 @@ class UploadSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Material(
@@ -69,9 +72,9 @@ class UploadSection extends StatelessWidget {
                 const SizedBox(height: 14),
 
                 // Heading
-                const Text(
-                  'Upload Image',
-                  style: TextStyle(
+                Text(
+                  language.tr('upload_image'),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 19,
                     fontWeight: FontWeight.bold,
@@ -82,7 +85,7 @@ class UploadSection extends StatelessWidget {
 
                 // Subtitle
                 Text(
-                  'Choose from gallery\nor take a photo',
+                  language.tr('choose_from_gallery'),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.85),

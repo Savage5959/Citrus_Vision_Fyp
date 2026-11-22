@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
 /// Preview screen matching Screen 3 of the reference specification.
 /// Displays the captured or selected image, an instruction note, and "Run Detection ->".
@@ -16,10 +17,12 @@ class PreviewImageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Preview Image'),
+        title: Text(language.tr('image_preview')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
           onPressed: () => Navigator.pop(context),
@@ -84,80 +87,106 @@ class PreviewImageScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 14),
-                    const Expanded(
+                    const SizedBox(width: 12),
+                    Expanded(
                       child: Text(
-                        'Make sure the image clearly\nshows the oranges on tree.',
-                        style: TextStyle(
-                          color: AppColors.infoText,
+                        language.tr('image_ready'),
+                        style: const TextStyle(
+                          color: AppColors.primaryGreen,
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          height: 1.3,
+                          height: 1.35,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 20),
 
-              // Run Detection button
+              // "Run Detection ->" Capsule Button
               SizedBox(
                 width: double.infinity,
-                height: 54,
+                height: 56,
                 child: ElevatedButton(
-                  onPressed: () => _onRunDetection(context),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Text(
+                                'Connecting to model inference pipeline...\n(Awaiting YOLO model integration)',
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: AppColors.primaryGreen,
+                        duration: const Duration(seconds: 4),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryGreen,
                     foregroundColor: Colors.white,
+                    elevation: 4,
+                    shadowColor: AppColors.primaryGreen.withValues(alpha: 0.35),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(27.0),
+                      borderRadius: BorderRadius.circular(28.0),
                     ),
-                    elevation: 0,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Run Detection',
-                        style: TextStyle(
+                        language.tr('run_detection'),
+                        style: const TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.2,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward_rounded, size: 20),
+                      const SizedBox(width: 8),
+                      const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 20,
+                      ),
                     ],
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+
+              // Action to reselect / retake photo
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  language.tr('choose_another'),
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _onRunDetection(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.hub_outlined, color: AppColors.primaryGreen),
-            SizedBox(width: 8),
-            Text('YOLO Detection Service'),
-          ],
-        ),
-        content: const Text(
-          'Deep learning model inference is being trained separately.\n\nOnce training is complete, the YOLO inference pipeline will be hooked into this action to perform orange detection and counting.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
       ),
     );
   }

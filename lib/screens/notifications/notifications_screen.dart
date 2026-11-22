@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_colors.dart';
+import '../../services/language_service.dart';
 
 /// Notifications screen opened when the user taps the notification bell.
 class NotificationsScreen extends StatelessWidget {
@@ -7,9 +8,11 @@ class NotificationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = LanguageService.instance;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(language.tr('notifications')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
           onPressed: () => Navigator.pop(context),
@@ -35,19 +38,19 @@ class NotificationsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text(
-                'No New Notifications',
-                style: TextStyle(
+              Text(
+                language.tr('no_notifications'),
+                style: const TextStyle(
                   color: AppColors.textDark,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Detection updates, tree scan alerts, and harvest tips will appear here.',
+              Text(
+                language.tr('all_caught_up'),
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 14,
                   height: 1.4,
